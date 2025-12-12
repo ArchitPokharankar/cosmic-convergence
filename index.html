@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Convergence | Asteroid Radar</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <div class="app-container">
+        <aside class="sidebar left-panel">
+            <header>
+                <h1>COSMIC<br><span>CONVERGENCE</span></h1>
+                <div class="status-bar">
+                    <span id="status-indicator" class="status-dot"></span>
+                    <span id="status-text">SYSTEM OFFLINE</span>
+                </div>
+            </header>
+            
+            <div class="controls">
+                <button id="btn-refresh" class="cyber-btn">REFRESH SCAN</button>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-live">
+                    <span class="slider"></span>
+                    <span class="label-text">LIVE FEED</span>
+                </label>
+            </div>
+
+            <div class="list-header">
+                <span>OBJECT ID</span>
+                <span>RISK</span>
+            </div>
+            <ul id="asteroid-list" class="scrollable-list">
+                <li class="loading-text">Initializing Radar...</li>
+            </ul>
+        </aside>
+
+        <main class="viewport">
+            <canvas id="radar-canvas"></canvas>
+            <div class="zoom-controls">
+        <button id="btn-zoom-in" class="zoom-btn">+</button>
+        <button id="btn-zoom-out" class="zoom-btn">−</button>
+            </div>
+            <div class="time-controls">
+    <div class="time-header">
+        <span id="sim-date">LIVE DATA</span>
+        <span id="sim-status">REALTIME</span>
+    </div>
+    <div class="scrubber-row">
+        <button id="btn-play-pause" class="play-btn">▶</button>
+        <input type="range" id="time-slider" min="0" max="100" value="0" step="0.1">
+    </div>
+    <div class="time-labels">
+        <span>NOW</span>
+        <span>+7 DAYS</span>
+    </div>
+</div>
+            <div class="overlay-hud">
+                <div class="hud-top">RADAR RANGE: <span id="hud-range">10M km</span></div>
+                <div class="hud-bottom">ACTIVE TRACKING: <span id="hud-count">0</span></div>
+            </div>
+        </main>
+
+        <aside class="sidebar right-panel" id="details-panel">
+            <h2>TARGET ANALYSIS</h2>
+            <div id="target-placeholder">Select an object from the radar or list.</div>
+            
+            
+            <div id="target-data" class="hidden">
+    <div class="data-row major">
+        <span class="label">DESIGNATION</span>
+        <span class="value" id="d-name">--</span>
+    </div>
+    
+    <div class="separator"></div>
+
+    <div class="data-row">
+        <span class="label">RISK INDEX</span>
+        <div class="risk-meter">
+            <div id="d-risk-bar" class="risk-fill" style="width: 0%"></div>
+        </div>
+        <span class="value" id="d-risk-val">0/100</span>
+    </div>
+
+    <div class="data-row">
+        <span class="label">DIAMETER</span>
+        <span class="value" id="d-diameter">-- km</span>
+    </div>
+    <div class="data-row">
+        <span class="label">VELOCITY</span>
+        <span class="value" id="d-velocity">-- km/h</span>
+    </div>
+    <div class="data-row">
+        <span class="label">MISS DISTANCE</span>
+        <span class="value warn" id="d-miss">-- km</span>
+    </div>
+    
+    <div class="separator"></div>
+    
+    <div class="prediction-box">
+        <div class="label">NEXT CLOSEST APPROACH</div>
+        <div class="value time-big" id="d-time-countdown">--:--:--</div>
+        <div class="sub-value" id="d-approach-date-time">--/--/---- --:--:--</div>
+    </div>
+    <div id="collision-warning" class="alert-box hidden">
+        ⚠ POTENTIAL HAZARD DETECTED
+    </div>
+</div>
+        </aside>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script/utils.js"></script>
+    <script src="script/api.js"></script>
+    <script src="script/dataProcessor.js"></script>
+    <script src="script/visuals.js"></script>
+    <script src="script/ui.js"></script>
+    <script src="script/app.js"></script>
+</body>
+</html>
