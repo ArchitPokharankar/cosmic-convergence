@@ -5,7 +5,7 @@ const App = {
     
     // Simulation State
     isPlaying: false,
-    simProgress: 0, // 0.0 to 1.0 (percent of slider)
+    simProgress: 0, 
     simLoopId: null,
 
     async init() {
@@ -13,7 +13,6 @@ const App = {
         
         Visuals.init('radar-canvas');
         
-        // Setup UI Handlers
         UI.init({
             onRefresh: () => this.refreshData(),
             onToggleLive: (val) => { this.useLive = val; this.refreshData(); }
@@ -28,16 +27,13 @@ const App = {
     setupTimeControls() {
         const slider = document.getElementById('time-slider');
         const playBtn = document.getElementById('btn-play-pause');
-        const dateDisplay = document.getElementById('sim-date');
         const statusDisplay = document.getElementById('sim-status');
 
-        // Slider Change
         slider.addEventListener('input', (e) => {
             this.simProgress = parseFloat(e.target.value);
             this.updateSimulation();
         });
 
-        // Play Button
         playBtn.addEventListener('click', () => {
             this.isPlaying = !this.isPlaying;
             playBtn.innerText = this.isPlaying ? '❚❚' : '▶';
@@ -51,10 +47,8 @@ const App = {
 
     runSimLoop() {
         if (!this.isPlaying) return;
-        
-        // Increment progress (speed of simulation)
-        this.simProgress += 0.2; // Speed factor
-        if (this.simProgress > 100) this.simProgress = 0; // Loop
+        this.simProgress += 0.2; 
+        if (this.simProgress > 100) this.simProgress = 0; 
         
         document.getElementById('time-slider').value = this.simProgress;
         this.updateSimulation();
@@ -63,13 +57,11 @@ const App = {
     },
 
     updateSimulation() {
-        // Convert 0-100 slider to 0.0-1.0 float
         const progressNormalized = this.simProgress / 100;
         
-        // Update UI Text
+        // Update Date
         const simTimeMs = Date.now() + (progressNormalized * 7 * 24 * 60 * 60 * 1000);
-        const simDate = new Date(simTimeMs);
-        document.getElementById('sim-date').innerText = simDate.toLocaleString();
+        document.getElementById('sim-date').innerText = new Date(simTimeMs).toLocaleString();
 
         // Render Frame
         Visuals.render(this.data, this.selectedId, progressNormalized);
@@ -86,6 +78,7 @@ const App = {
 
     async refreshData() {
         document.getElementById('asteroid-list').innerHTML = '<li class="loading-text">Scanning Deep Space...</li>';
+        
         const rawData = await API.fetchFeed(this.useLive);
         if (!rawData) { UI.updateStatus(this.useLive, true); return; }
 
@@ -93,12 +86,11 @@ const App = {
         
         UI.updateStatus(this.useLive, false);
         UI.populateList(this.data, (id) => this.selectAsteroid(id));
-        
         document.getElementById('hud-count').innerText = this.data.length;
         
-        // Reset Sim
         this.simProgress = 0;
         document.getElementById('time-slider').value = 0;
+        
         this.updateSimulation(); 
     },
 
@@ -106,9 +98,31 @@ const App = {
         this.selectedId = id;
         const ast = this.data.find(a => a.id === id);
         if (ast) {
-            UI.showDetails(ast);
-            this.updateSimulation(); // Re-render to show selection
+            // Pass deflect logic to UI
+            UI.showDetails(ast, () => this.deflectAsteroid(id));
+            this.updateSimulation(); 
         }
+    },
+
+    // --- RESTORED DEFLECTION LOGIC ---
+    deflectAsteroid(id) {
+        // 1. Launch Missile Visualization
+        Visuals.launchMissile(id, () => {
+            // 2. Callback executed on Impact
+            const ast = this.data.find(a => a.id === id);
+            if (ast) {
+                // Update Model
+                ast.is_deflected = true;
+                ast.risk_score = 0; 
+
+                // Update UI (Right Panel)
+                this.selectAsteroid(id);
+                // Update List (Left Panel)
+                UI.populateList(this.data, (idx) => this.selectAsteroid(idx));
+                // Redraw Visuals (Green orbit)
+                this.updateSimulation();
+            }
+        });
     }
 };
 

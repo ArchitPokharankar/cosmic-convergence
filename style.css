@@ -193,15 +193,14 @@ canvas { width: 100%; height: 100%; display: block; }
 /* --- ZOOM CONTROLS --- */
 .zoom-controls {
     position: absolute;
-    bottom: 110px; 
+    bottom: 160px; /* MOVED UP FURTHER to clear time panel */
     right: 30px;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* INCREASED GAP */
+    gap: 15px; 
     z-index: 50;
     pointer-events: auto; 
 }
-
 .zoom-btn {
     width: 45px; /* LARGER BUTTON */
     height: 45px; /* LARGER BUTTON */
@@ -345,3 +344,14 @@ input[type=range]::-moz-range-track {
     .time-controls { padding: 10px 15px; }
     .hud-bottom-left { bottom: 130px; } /* ADJUSTED FOR MOBILE */
 }
+.impact-box {
+    background: rgba(255, 0, 85, 0.1); 
+    border: 1px solid var(--accent);
+    padding: 10px; margin-bottom: 15px;
+    border-radius: 4px;
+}
+.warning-text { color: var(--accent); font-size: 0.9rem; margin-top: 5px; }
+.sub-label { font-size: 0.7rem; color: var(--text-dim); margin-top: 8px; }
+
+.full-width { width: 100%; margin-bottom: 15px; font-weight: bold; letter-spacing: 2px; }
+.full-width:hover { background: var(--accent); box-shadow: 0 0 20px var(--accent); }
